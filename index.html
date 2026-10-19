@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Дальнобойщик 3D — NEXT GEN</title>
+<title>Дальнобойщик 3D</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Segoe UI', Arial, sans-serif; user-select: none; -webkit-user-select: none; }
   #game-canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 
-  /* ===== HUD ===== */
+  /* HUD */
   #hud { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
   .hud-panel {
     position: absolute; background: rgba(8,12,20,0.65); border: 1px solid rgba(80,180,255,0.25);
@@ -39,21 +39,20 @@
     box-shadow: 0 0 15px rgba(80,180,255,0.2);
   }
 
-  /* ===== Уведомления ===== */
+  /* Уведомления */
   #notifications { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); z-index: 60; display: flex; flex-direction: column; gap: 10px; align-items: center; pointer-events: none; }
   .notif {
     background: rgba(15,25,40,0.95); border: 1px solid rgba(80,180,255,0.6); color: #fff;
     padding: 12px 24px; border-radius: 12px; font-size: 16px; font-weight: 700;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.8); animation: notifIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), notifOut 0.4s ease 2.2s forwards;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.8); animation: notifIn 0.3s, notifOut 0.4s ease 2.2s forwards;
   }
   .notif.warn { border-color: #ffb84d; color: #ffe0a3; }
   .notif.danger { border-color: #ff5252; color: #ffb3b3; }
   .notif.success { border-color: #4dff88; color: #b3ffcc; }
-  @keyframes notifIn { from { opacity: 0; transform: translateY(-20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes notifIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes notifOut { to { opacity: 0; transform: translateY(-10px); } }
 
-  /* ===== Кнопки ===== */
+  /* Кнопки */
   .top-btn {
     position: fixed; width: 50px; height: 50px; z-index: 40;
     background: rgba(10,20,35,0.85); border: 1px solid rgba(80,180,255,0.4);
@@ -67,17 +66,16 @@
   #btn-view { top: 16px; left: 16px; }
   #btn-music { top: 16px; right: 76px; font-size: 20px; }
 
-  /* ===== Меню ===== */
+  /* Меню */
   #menu-overlay {
     position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
     background: radial-gradient(circle at 50% 40%, rgba(15,35,60,0.9), rgba(2,5,10,0.98));
-    backdrop-filter: blur(8px);
   }
   #menu-overlay.hidden { display: none; }
   .menu-card {
     width: min(440px, 92vw); background: rgba(10,18,30,0.95);
     border: 1px solid rgba(80,180,255,0.3); border-radius: 24px; padding: 32px 28px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.9), inset 0 0 30px rgba(80,180,255,0.05); text-align: center;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.9); text-align: center;
   }
   .menu-card h1 { color: #fff; font-size: 28px; letter-spacing: 2px; margin-bottom: 4px; text-shadow: 0 0 20px rgba(80,180,255,0.6); }
   .menu-card .subtitle { color: #6fb8ff; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 26px; font-weight: 700; }
@@ -101,14 +99,13 @@
   .music-upload-btn { background: rgba(80,180,255,0.15); border: 1px solid #6fb8ff; color: #cfe8ff; padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; font-weight: 600; }
   .music-upload-btn:hover { background: rgba(80,180,255,0.3); }
 
-  /* ===== Мобильное управление ===== */
+  /* Мобильное управление */
   #mobile-controls { display: none; }
-  
   .pedal {
     position: fixed; bottom: 30px; width: 110px; height: 110px; z-index: 45;
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
     font-size: 44px; color: #fff; touch-action: none; user-select: none;
-    border: 3px solid rgba(255,255,255,0.2); transition: background 0.1s, transform 0.1s, box-shadow 0.1s;
+    border: 3px solid rgba(255,255,255,0.2); transition: background 0.1s, transform 0.1s;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
   #pedal-gas {
@@ -121,48 +118,45 @@
     background: radial-gradient(circle at 40% 30%, rgba(240,80,80,0.7), rgba(100,20,20,0.8));
     border-color: rgba(255,100,100,0.4);
   }
-  .pedal.active { transform: scale(0.92); filter: brightness(1.3); box-shadow: 0 0 30px rgba(255,255,255,0.3); }
+  .pedal.active { transform: scale(0.92); filter: brightness(1.3); }
 
-  /* УВЕЛИЧЕННЫЙ РУЛЬ ПО ЦЕНТРУ */
   #steering-wheel {
     position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
     width: 160px; height: 160px; z-index: 45; border-radius: 50%;
     background: radial-gradient(circle at 50% 50%, #1a2230, #05080c 80%);
     border: 8px solid #2a3a4f; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.8), 0 0 15px rgba(80,180,255,0.15);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.8);
     touch-action: none; user-select: none;
   }
-  #steering-wheel .wheel-spoke { position: absolute; left: 50%; top: 50%; width: 14px; height: 60px; background: linear-gradient(to bottom, #4d5f78, #2a3445); transform-origin: 50% 100%; border-radius: 4px; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
+  #steering-wheel .wheel-spoke { position: absolute; left: 50%; top: 50%; width: 14px; height: 60px; background: linear-gradient(to bottom, #4d5f78, #2a3445); transform-origin: 50% 100%; border-radius: 4px; }
   #steering-wheel .wheel-spoke.s1 { transform: translate(-50%, -100%) rotate(0deg); }
   #steering-wheel .wheel-spoke.s2 { transform: translate(-50%, -100%) rotate(120deg); }
   #steering-wheel .wheel-spoke.s3 { transform: translate(-50%, -100%) rotate(-120deg); }
-  #steering-wheel .wheel-hub { position: absolute; left: 50%; top: 50%; width: 50px; height: 50px; transform: translate(-50%,-50%); border-radius: 50%; background: radial-gradient(circle at 40% 35%, #6a809c, #1c2735); border: 3px solid #8a9ab0; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+  #steering-wheel .wheel-hub { position: absolute; left: 50%; top: 50%; width: 50px; height: 50px; transform: translate(-50%,-50%); border-radius: 50%; background: radial-gradient(circle at 40% 35%, #6a809c, #1c2735); border: 3px solid #8a9ab0; }
   #steering-wheel .wheel-marker { position: absolute; left: 50%; top: 8px; width: 10px; height: 24px; transform: translateX(-50%); border-radius: 5px; background: #ffb84d; box-shadow: 0 0 12px rgba(255,184,77,1); }
 
-  /* ===== Пауза ===== */
+  /* Пауза */
   #pause-overlay {
     position: fixed; inset: 0; z-index: 90; display: none; align-items: center; justify-content: center;
-    background: rgba(4,8,14,0.85); backdrop-filter: blur(10px);
+    background: rgba(4,8,14,0.85);
   }
   #pause-overlay.show { display: flex; }
-  .pause-card { text-align: center; background: rgba(12,20,34,0.95); border: 1px solid rgba(80,180,255,0.4); border-radius: 24px; padding: 36px 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
-  .pause-card h2 { color: #fff; margin-bottom: 24px; letter-spacing: 3px; font-size: 24px; text-shadow: 0 0 10px rgba(80,180,255,0.5); }
+  .pause-card { text-align: center; background: rgba(12,20,34,0.95); border: 1px solid rgba(80,180,255,0.4); border-radius: 24px; padding: 36px 40px; }
+  .pause-card h2 { color: #fff; margin-bottom: 24px; letter-spacing: 3px; font-size: 24px; }
   .pause-card button {
     display: block; width: 240px; margin: 12px auto; padding: 16px; cursor: pointer;
     background: linear-gradient(135deg, rgba(30,55,90,0.95), rgba(18,32,54,0.95));
     border: 1px solid rgba(80,180,255,0.4); border-radius: 14px; color: #e8f2ff;
     font-size: 16px; font-weight: 700; font-family: inherit; transition: all 0.2s;
   }
-  .pause-card button:hover { border-color: rgba(80,180,255,0.9); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(80,180,255,0.2); }
-  .pause-card button:active { transform: scale(0.97); }
+  .pause-card button:hover { border-color: rgba(80,180,255,0.9); }
 
-  /* ===== Медиа-запросы ===== */
   @media (hover: none) and (pointer: coarse) {
     #mobile-controls { display: block; }
     #speedo-panel { bottom: auto; top: 80px; right: 16px; min-width: 130px; padding: 8px 12px; }
     #speed-val { font-size: 36px; }
     #fuel-panel { bottom: auto; top: 80px; left: 16px; min-width: 130px; padding: 8px 12px; }
-    #hud-top-left, #hud-top-right { display: none; } /* Скрываем на телефоне, чтобы не мешало */
+    #hud-top-left, #hud-top-right { display: none; }
   }
   @media (max-width: 768px) {
     #steering-wheel { width: 140px; height: 140px; bottom: 15px; }
@@ -178,7 +172,6 @@
 
 <canvas id="game-canvas"></canvas>
 
-<!-- HUD -->
 <div id="hud">
   <div id="hud-top-left" class="hud-panel">
     <div class="hud-label">Маршрут</div>
@@ -210,12 +203,10 @@
 
 <div id="notifications"></div>
 
-<!-- Кнопки -->
 <button id="btn-pause" class="top-btn" title="Пауза">⏸</button>
 <button id="btn-view" class="top-btn" title="Вид">👁</button>
 <button id="btn-music" class="top-btn" title="Музыка">🎵</button>
 
-<!-- Мобильное управление -->
 <div id="mobile-controls">
   <div id="pedal-brake" class="pedal">▼</div>
   <div id="pedal-gas" class="pedal">▲</div>
@@ -228,15 +219,14 @@
   </div>
 </div>
 
-<!-- Главное меню -->
 <div id="menu-overlay">
   <div class="menu-card">
     <h1>🚛 ДАЛЬНОБОЙЩИК</h1>
-    <div class="subtitle">NEXT GEN EDITION</div>
+    <div class="subtitle">3D TRUCK SIMULATOR</div>
     
     <button class="mode-btn sandbox" data-mode="sandbox">
       <span class="mtitle">Песочница</span>
-      <span class="mdesc">Бесконечная дорога, без топлива и урона. Свободная езда.</span>
+      <span class="mdesc">Бесконечная дорога, без топлива и урона.</span>
     </button>
     <button class="mode-btn easy" data-mode="easy">
       <span class="mtitle">Лёгкий</span>
@@ -244,18 +234,17 @@
     </button>
     <button class="mode-btn hard" data-mode="hard">
       <span class="mtitle">Сложный</span>
-      <span class="mdesc">Реалистичный расход, АЗС, ДТП, штрафы, лимит времени.</span>
+      <span class="mdesc">50 км, АЗС, ДТП, штрафы, лимит времени.</span>
     </button>
     
     <div class="music-upload-area">
-      <label for="music-file">🎵 Добавить свою музыку (MP3)</label>
+      <label for="music-file">🎵 Своя музыка (MP3)</label>
       <input type="file" id="music-file" accept="audio/mpeg, audio/mp3">
       <button class="music-upload-btn" id="btn-load-music">Выбрать трек</button>
     </div>
   </div>
 </div>
 
-<!-- Пауза -->
 <div id="pause-overlay">
   <div class="pause-card">
     <h2>ПАУЗА</h2>
@@ -265,29 +254,31 @@
   </div>
 </div>
 
-<!-- Музыка из фильма Груз 200 -->
 <audio id="bg-music" loop preload="auto">
   <source src="https://archive.org/download/gruz-200-ost/02%20-%20%D0%92%20%D0%BA%D1%80%D0%B0%D1%8E%20%D0%BC%D0%B0%D0%B3%D0%BD%D0%BE%D0%BB%D0%B8%D0%B9.mp3" type="audio/mpeg">
 </audio>
 
-<!-- THREE.JS И POSTPROCESSING -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/ShaderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/shaders/CopyShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<!-- РЕЗЕРВНЫЕ CDN для Three.js (если один не загрузится, подхватится другой) -->
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+<script>
+  // Если unpkg не загрузился — пробуем другой CDN через document.write
+  if (typeof THREE === 'undefined') {
+    document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"><\/script>');
+  }
+</script>
+<script>
+  // Ещё одна резервная проверка
+  if (typeof THREE === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"><\/script>');
+  }
+</script>
 
 <script>
-/* ============================================================
-   ДАЛЬНОБОЙЩИК 3D — NEXT GEN
-   ============================================================ */
 'use strict';
 
-/* ===================== ENGINE (Графика и Пост-обработка) ===================== */
+/* ===================== ENGINE (Графика) ===================== */
 const Engine = (() => {
-  let renderer, scene, camera, clock, composer;
+  let renderer, scene, camera, clock;
   let sunLight;
 
   function init(canvas) {
@@ -296,24 +287,20 @@ const Engine = (() => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // Тонирование для сочных цветов (замена Bloom)
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.15;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     scene = new THREE.Scene();
-    // Красивый градиентный туман (голубоватый)
     scene.background = new THREE.Color(0xaaccff);
-    scene.fog = new THREE.FogExp2(0xaaccff, 0.006); 
+    scene.fog = new THREE.FogExp2(0xaaccff, 0.006);
 
-    // Камера (стандартное зрение без искажений)
     camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
     clock = new THREE.Clock();
 
-    // Освещение
-    const ambient = new THREE.AmbientLight(0xffffff, 0.3);
-    scene.add(ambient);
-
-    const hemi = new THREE.HemisphereLight(0xaaccff, 0x445533, 0.8);
-    scene.add(hemi);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+    scene.add(new THREE.HemisphereLight(0xaaccff, 0x445533, 0.85));
 
     sunLight = new THREE.DirectionalLight(0xfff0d0, 2.5);
     sunLight.position.set(100, 150, -50);
@@ -330,37 +317,22 @@ const Engine = (() => {
     scene.add(sunLight);
     scene.add(sunLight.target);
 
-    // --- ПОСТ-ОБРАБОТКА (Блум для сочности) ---
-    composer = new THREE.EffectComposer(renderer);
-    const renderPass = new THREE.RenderPass(scene, camera);
-    composer.addPass(renderPass);
-
-    // Эффект свечения (Bloom)
-    const bloomPass = new THREE.UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      0.4,  // strength (сила свечения)
-      0.5,  // radius
-      0.85  // threshold (порог яркости)
-    );
-    composer.addPass(bloomPass);
-
     window.addEventListener('resize', onResize);
-    return { renderer, scene, camera, clock, composer, sunLight };
+    return { renderer, scene, camera, clock, sunLight };
   }
 
   function onResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    composer.setSize(window.innerWidth, window.innerHeight);
   }
 
-  return { init, get renderer() { return renderer; }, get scene() { return scene; }, get camera() { return camera; }, get clock() { return clock; }, get composer() { return composer; }, get sunLight() { return sunLight; } };
+  return { init, get renderer() { return renderer; }, get scene() { return scene; }, get camera() { return camera; }, get clock() { return clock; }, get sunLight() { return sunLight; } };
 })();
 
-/* ===================== ROAD & TRAFFIC (Дорога и Трафик) ===================== */
+/* ===================== WORLD (Дорога и Трафик) ===================== */
 const World = (() => {
-  const ROAD_WIDTH = 14; // Широкая дорога (4 полосы)
+  const ROAD_WIDTH = 14;
   const LANE_WIDTH = 3.5;
   const SEG_LEN = 40;
   const SEG_COUNT = 20;
@@ -371,33 +343,26 @@ const World = (() => {
   let traffic = [];
   let asphaltTex;
 
-  // Текстура асфальта с разметкой
   function makeAsphaltTexture() {
     const c = document.createElement('canvas');
     c.width = 512; c.height = 1024;
     const ctx = c.getContext('2d');
-    ctx.fillStyle = '#2a2d33'; // Темный асфальт
+    ctx.fillStyle = '#2a2d33';
     ctx.fillRect(0, 0, 512, 1024);
     
-    // Шум
-    for (let i = 0; i < 10000; i++) {
-      ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.05)';
+    // Шум для реалистичности
+    for (let i = 0; i < 15000; i++) {
+      ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.025)' : 'rgba(0,0,0,0.05)';
       ctx.fillRect(Math.random() * 512, Math.random() * 1024, 2, 2);
     }
 
-    // Разметка: 4 полосы (3 линии)
-    // Края
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(20, 0, 8, 1024); // Левый край
-    ctx.fillRect(484, 0, 8, 1024); // Правый край
+    // Разметка
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(20, 0, 8, 1024);
+    ctx.fillRect(484, 0, 8, 1024);
     
-    // Пунктир по центру
     for (let y = 0; y < 1024; y += 80) {
       ctx.fillRect(250, y, 12, 40);
-    }
-    
-    // Разделительные линии полос (пунктир)
-    for (let y = 0; y < 1024; y += 80) {
       ctx.fillRect(140, y, 6, 40);
       ctx.fillRect(366, y, 6, 40);
     }
@@ -412,31 +377,27 @@ const World = (() => {
   function createSegment() {
     const group = new THREE.Group();
     
-    // Дорога
     const roadGeo = new THREE.PlaneGeometry(ROAD_WIDTH, SEG_LEN);
-    const roadMat = new THREE.MeshStandardMaterial({ map: asphaltTex, roughness: 0.8, metalness: 0.1 });
+    const roadMat = new THREE.MeshStandardMaterial({ map: asphaltTex, roughness: 0.85, metalness: 0.05 });
     const road = new THREE.Mesh(roadGeo, roadMat);
     road.rotation.x = -Math.PI / 2;
     road.receiveShadow = true;
     group.add(road);
 
-    // Трава по бокам
     const grassMat = new THREE.MeshStandardMaterial({ color: 0x3b5e2b, roughness: 1 });
-    const grassGeo = new THREE.PlaneGeometry(50, SEG_LEN);
-    
+    const grassGeo = new THREE.PlaneGeometry(60, SEG_LEN);
     const leftGrass = new THREE.Mesh(grassGeo, grassMat);
     leftGrass.rotation.x = -Math.PI / 2;
-    leftGrass.position.set(-ROAD_WIDTH/2 - 25, -0.05, 0);
+    leftGrass.position.set(-ROAD_WIDTH/2 - 30, -0.05, 0);
     leftGrass.receiveShadow = true;
     group.add(leftGrass);
 
     const rightGrass = new THREE.Mesh(grassGeo, grassMat);
     rightGrass.rotation.x = -Math.PI / 2;
-    rightGrass.position.set(ROAD_WIDTH/2 + 25, -0.05, 0);
+    rightGrass.position.set(ROAD_WIDTH/2 + 30, -0.05, 0);
     rightGrass.receiveShadow = true;
     group.add(rightGrass);
 
-    // Отбойники
     const barrierMat = new THREE.MeshStandardMaterial({ color: 0xa0a5b0, metalness: 0.8, roughness: 0.4 });
     const barrierGeo = new THREE.BoxGeometry(0.2, 0.8, SEG_LEN);
     const leftB = new THREE.Mesh(barrierGeo, barrierMat);
@@ -453,23 +414,23 @@ const World = (() => {
 
   function createTrafficCar() {
     const g = new THREE.Group();
-    const colors = [0x2244aa, 0xaa2222, 0xeebb22, 0xffffff, 0x111111];
+    const colors = [0x2244aa, 0xaa2222, 0xeebb22, 0xffffff, 0x111111, 0x2a8a4a];
     const color = colors[Math.floor(Math.random() * colors.length)];
     
-    const bodyMat = new THREE.MeshStandardMaterial({ color, metalness: 0.7, roughness: 0.3 });
+    const bodyMat = new THREE.MeshStandardMaterial({ color, metalness: 0.6, roughness: 0.35 });
     const body = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1, 3.8), bodyMat);
     body.position.y = 0.6;
     body.castShadow = true;
     g.add(body);
 
-    const cabinMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.1 });
+    const cabinMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, metalness: 0.9, roughness: 0.1 });
     const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.8, 2), cabinMat);
     cabin.position.set(0, 1.3, -0.2);
     cabin.castShadow = true;
     g.add(cabin);
 
-    // Фары
-    const lightMat = new THREE.MeshBasicMaterial({ color: 0xffffaa });
+    // Фары со свечением (эмулируем bloom через emissive)
+    const lightMat = new THREE.MeshStandardMaterial({ color: 0xffffaa, emissive: 0xffffaa, emissiveIntensity: 2 });
     const headL = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.2, 0.1), lightMat);
     headL.position.set(-0.6, 0.6, 1.9);
     g.add(headL);
@@ -482,16 +443,13 @@ const World = (() => {
 
   function spawnTraffic() {
     const car = createTrafficCar();
-    const isOncoming = Math.random() > 0.5; // Встречка или попутка
-    const lane = Math.floor(Math.random() * 2) + 1; // 1 или 2
-    
-    // X координаты для полос (0 - центр, смещения)
+    const isOncoming = Math.random() > 0.5;
+    const lane = Math.random() > 0.5 ? 1 : 2;
     const xOffset = isOncoming ? -(lane * LANE_WIDTH) : (lane * LANE_WIDTH);
     
     car.position.x = xOffset;
-    car.position.z = -200 - Math.random() * 400; // Впереди игрока
-    car.rotation.y = isOncoming ? 0 : Math.PI; // Встречные едут на нас
-    
+    car.position.z = -150 - Math.random() * 400;
+    car.rotation.y = isOncoming ? 0 : Math.PI;
     car.userData.speed = isOncoming ? (15 + Math.random() * 10) : (8 + Math.random() * 8);
     car.userData.isOncoming = isOncoming;
     
@@ -502,7 +460,7 @@ const World = (() => {
   function init(_scene) {
     scene = _scene;
     asphaltTex = makeAsphaltTexture();
-    asphaltTex.repeat.set(1, 2); // Масштабируем разметку
+    asphaltTex.repeat.set(1, 2);
 
     for (let i = 0; i < SEG_COUNT; i++) {
       const seg = createSegment();
@@ -512,14 +470,10 @@ const World = (() => {
     }
     nextSegZ = -SEG_COUNT * SEG_LEN;
 
-    // Спавн машин
-    for (let i = 0; i < 8; i++) {
-      setTimeout(() => spawnTraffic(), i * 1000);
-    }
+    for (let i = 0; i < 8; i++) setTimeout(() => spawnTraffic(), i * 1000);
   }
 
   function update(playerZ, dt) {
-    // Движение сегментов
     for (const seg of segments) {
       if (seg.position.z > playerZ + SEG_LEN * 2) {
         seg.position.z = nextSegZ;
@@ -527,20 +481,17 @@ const World = (() => {
       }
     }
 
-    // Движение трафика
     for (let i = traffic.length - 1; i >= 0; i--) {
       const car = traffic[i];
       if (car.userData.isOncoming) {
-        car.position.z += car.userData.speed * dt; // Едет на нас (в положительную сторону Z)
+        car.position.z += car.userData.speed * dt;
       } else {
-        car.position.z -= car.userData.speed * dt; // Едет от нас
+        car.position.z -= car.userData.speed * dt;
       }
 
-      // Удаление далеких машин
       if (car.position.z > playerZ + 50 || car.position.z < playerZ - 600) {
         scene.remove(car);
         traffic.splice(i, 1);
-        // Спавним новую
         spawnTraffic();
       }
     }
@@ -549,35 +500,23 @@ const World = (() => {
   return { init, update, ROAD_WIDTH, LANE_WIDTH };
 })();
 
-/* ===================== TRUCK (Кабина и Физика) ===================== */
+/* ===================== TRUCK ===================== */
 const Truck = (() => {
   let scene, camera;
-  let truckGroup;
-  let steeringWheelMesh;
+  let truckGroup, steeringWheelMesh;
   let wheelMeshes = [];
 
   const physics = {
-    speed: 0,
-    maxSpeed: 36, // ~130 км/ч
-    accel: 12,
-    brakeForce: 25,
-    steering: 0,
-    steerSpeed: 4,
-    steerReturn: 5,
-    heading: 0,
-    position: new THREE.Vector3(0, 0, 0),
-    fuel: 100,
-    rpm: 800,
-    odometer: 0,
-    tilt: 0
+    speed: 0, maxSpeed: 36, accel: 12, brakeForce: 25,
+    steering: 0, steerSpeed: 4, steerReturn: 5,
+    heading: 0, position: new THREE.Vector3(0, 0, 0),
+    fuel: 100, rpm: 800, odometer: 0, tilt: 0
   };
-
   const input = { throttle: 0, brake: 0, steer: 0, handbrake: false };
 
   function buildTruckModel() {
     const group = new THREE.Group();
 
-    // Шасси (невидимое для игрока изнутри, но видимое снаружи)
     const chassis = new THREE.Mesh(
       new THREE.BoxGeometry(2.5, 0.5, 6),
       new THREE.MeshStandardMaterial({ color: 0x111111 })
@@ -586,43 +525,36 @@ const Truck = (() => {
     chassis.castShadow = true;
     group.add(chassis);
 
-    // КАБИНА (Внутренняя часть)
     const cabinMat = new THREE.MeshStandardMaterial({ color: 0x2a2e35, roughness: 0.8 });
-    
-    // Пол
     const floor = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.1, 2.5), cabinMat);
     floor.position.set(0, 1, -1);
     group.add(floor);
 
-    // Торпедо (панель)
     const dashMat = new THREE.MeshStandardMaterial({ color: 0x15171a, roughness: 0.6 });
     const dash = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.6, 0.8), dashMat);
     dash.position.set(0, 1.3, -0.5);
-    dash.castShadow = true;
-    dash.receiveShadow = true;
+    dash.castShadow = true; dash.receiveShadow = true;
     group.add(dash);
 
-    // Козырек над приборкой
     const dashTop = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.2, 0.9), dashMat);
     dashTop.position.set(0, 1.7, -0.4);
     dashTop.rotation.x = -0.1;
     group.add(dashTop);
 
-    // Приборы (светящиеся)
-    const gaugeMat = new THREE.MeshBasicMaterial({ color: 0x33aaff });
-    const gauge1 = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.2), gaugeMat);
+    // Приборы со свечением
+    const gaugeMat = new THREE.MeshStandardMaterial({ color: 0x113355, emissive: 0x33aaff, emissiveIntensity: 1.5 });
+    const gauge1 = new THREE.Mesh(new THREE.CircleGeometry(0.2, 16), gaugeMat);
     gauge1.position.set(-0.6, 1.5, -0.08);
     group.add(gauge1);
-    const gauge2 = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.2), gaugeMat);
+    const gauge2 = new THREE.Mesh(new THREE.CircleGeometry(0.2, 16), gaugeMat);
     gauge2.position.set(0.6, 1.5, -0.08);
     group.add(gauge2);
 
-    // Руль 3D в кабине
+    // Руль 3D
     const steeringGroup = new THREE.Group();
     const rimGeo = new THREE.TorusGeometry(0.4, 0.06, 12, 32);
     const rimMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.9 });
-    const rim = new THREE.Mesh(rimGeo, rimMat);
-    steeringGroup.add(rim);
+    steeringGroup.add(new THREE.Mesh(rimGeo, rimMat));
     
     const spokeGeo = new THREE.BoxGeometry(0.05, 0.35, 0.05);
     const spokeMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
@@ -638,14 +570,14 @@ const Truck = (() => {
     group.add(steeringGroup);
     steeringWheelMesh = steeringGroup;
 
-    // Лобовое стекло (чтобы было видно рамку)
+    // Лобовое стекло (полупрозрачное)
     const glassMat = new THREE.MeshStandardMaterial({ color: 0x112233, transparent: true, opacity: 0.15, roughness: 0.1, metalness: 0.9 });
     const windshield = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.2), glassMat);
     windshield.position.set(0, 2, -0.9);
     windshield.rotation.x = 0.1;
     group.add(windshield);
 
-    // Стойки лобового стекла (чтобы чувствовалась кабина)
+    // Стойки кабины
     const pillarMat = new THREE.MeshStandardMaterial({ color: 0x1a1e24 });
     const leftPillar = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.4, 0.1), pillarMat);
     leftPillar.position.set(-1.15, 2, -0.9);
@@ -654,13 +586,16 @@ const Truck = (() => {
     rightPillar.position.set(1.15, 2, -0.9);
     group.add(rightPillar);
 
-    // Зеркала снаружи
+    // Зеркала
     const mirrorMat = new THREE.MeshStandardMaterial({ color: 0x8899aa, metalness: 0.8, roughness: 0.2 });
     const leftMirror = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.4, 0.6), mirrorMat);
     leftMirror.position.set(-1.4, 2.2, -0.8);
     group.add(leftMirror);
+    const rightMirror = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.4, 0.6), mirrorMat);
+    rightMirror.position.set(1.4, 2.2, -0.8);
+    group.add(rightMirror);
 
-    // Колёса (только для вида снаружи)
+    // Колёса
     const wheelGeo = new THREE.CylinderGeometry(0.6, 0.6, 0.5, 24);
     const wheelMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a });
     const wheelPos = [[-1.2, 0.6, -2], [1.2, 0.6, -2], [-1.2, 0.6, 2], [1.2, 0.6, 2]];
@@ -684,16 +619,13 @@ const Truck = (() => {
   }
 
   function setInput(throttle, brake, steer, handbrake) {
-    input.throttle = throttle;
-    input.brake = brake;
-    input.steer = steer;
-    input.handbrake = handbrake;
+    input.throttle = throttle; input.brake = brake;
+    input.steer = steer; input.handbrake = handbrake;
   }
 
   function update(dt, mode, gameState) {
     if (!truckGroup) return;
 
-    // Физика руля
     if (Math.abs(input.steer) > 0.01) {
       physics.steering += input.steer * physics.steerSpeed * dt;
     } else {
@@ -702,7 +634,6 @@ const Truck = (() => {
     }
     physics.steering = Math.max(-1, Math.min(1, physics.steering));
 
-    // Ускорение / Торможение
     const maxSpeed = physics.maxSpeed * (mode === 'hard' ? 0.9 : 1);
     if (input.throttle > 0) physics.speed += physics.accel * input.throttle * dt;
     if (input.brake > 0) {
@@ -714,82 +645,64 @@ const Truck = (() => {
     physics.speed *= Math.pow(0.998, dt * 60);
     physics.speed = Math.max(-10, Math.min(maxSpeed, physics.speed));
 
-    // Поворот
     const steerFactor = Math.min(1, Math.abs(physics.speed) / 10);
     const turnRate = physics.steering * 1.5 * steerFactor;
     physics.heading += turnRate * dt * (physics.speed >= 0 ? 1 : -1);
 
-    // Движение
     const dx = Math.sin(physics.heading) * physics.speed * dt;
     const dz = Math.cos(physics.heading) * physics.speed * dt;
     physics.position.x += dx;
     physics.position.z -= dz;
     physics.odometer += Math.abs(physics.speed) * dt;
 
-    // Коллизия со стеной (отбойники)
     const bound = World.ROAD_WIDTH / 2 - 1.3;
     if (physics.position.x < -bound) { physics.position.x = -bound; physics.speed *= 0.8; }
     if (physics.position.x > bound) { physics.position.x = bound; physics.speed *= 0.8; }
 
-    // Расход топлива
     if (mode !== 'sandbox' && gameState) {
       const fuelUse = (Math.abs(physics.speed) * 0.005 + (input.throttle * 0.01)) * dt * (mode === 'hard' ? 3 : 0.5);
       physics.fuel = Math.max(0, physics.fuel - fuelUse);
       if (physics.fuel <= 0) physics.speed *= 0.95;
     }
 
-    // RPM
     const targetRpm = 800 + Math.abs(physics.speed) * 200 + input.throttle * 1000;
     physics.rpm += (targetRpm - physics.rpm) * 8 * dt;
 
-    // Крен
     const targetTilt = -physics.steering * 0.05 * Math.min(1, Math.abs(physics.speed) / 20);
     physics.tilt += (targetTilt - physics.tilt) * 6 * dt;
 
-    // Применяем к модели
     truckGroup.position.copy(physics.position);
     truckGroup.rotation.y = physics.heading;
     truckGroup.rotation.z = physics.tilt;
 
-    // Руль 3D
     if (steeringWheelMesh) steeringWheelMesh.rotation.z = physics.steering * Math.PI;
 
-    // Колёса
     const wheelRot = physics.speed * dt / 0.6;
     for (const w of wheelMeshes) w.rotation.x += wheelRot;
 
-    // КАМЕРА ОТ ПЕРВОГО ЛИЦА (строго внутри)
-    // Позиция камеры: чуть выше руля, смотрит вперед
+    // Камера от первого лица (из кабины)
     const camOffset = new THREE.Vector3(0, 2.1, -0.2);
     const camPos = camOffset.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), physics.heading);
     camPos.add(physics.position);
     camera.position.lerp(camPos, 15 * dt);
     
-    // Точка взгляда: далеко впереди
     const lookAt = new THREE.Vector3(0, 1.8, -30).applyAxisAngle(new THREE.Vector3(0, 1, 0), physics.heading);
     lookAt.add(physics.position);
     camera.lookAt(lookAt);
   }
 
   function reset() {
-    physics.speed = 0;
-    physics.heading = 0;
+    physics.speed = 0; physics.heading = 0;
     physics.position.set(0, 0, 0);
-    physics.fuel = 100;
-    physics.rpm = 800;
-    physics.odometer = 0;
-    physics.steering = 0;
-    physics.tilt = 0;
-    if (truckGroup) {
-      truckGroup.position.set(0, 0, 0);
-      truckGroup.rotation.set(0, 0, 0);
-    }
+    physics.fuel = 100; physics.rpm = 800;
+    physics.odometer = 0; physics.steering = 0; physics.tilt = 0;
+    if (truckGroup) { truckGroup.position.set(0, 0, 0); truckGroup.rotation.set(0, 0, 0); }
   }
 
   return { init, update, reset, setInput, get physics() { return physics; }, get group() { return truckGroup; } };
 })();
 
-/* ===================== UI (Интерфейс) ===================== */
+/* ===================== UI ===================== */
 const UI = (() => {
   let menuOverlay, pauseOverlay, notifications;
   let speedEl, rpmEl, odoEl, fuelBar, fuelText, routeInfo, timeInfo, fineInfo, modeIndicator;
@@ -798,18 +711,10 @@ const UI = (() => {
 
   const keys = { w: false, a: false, s: false, d: false, space: false };
   const touch = { throttle: 0, brake: 0, steer: 0 };
+  let callbacks = {};
 
-  let onModeSelect, onPause, onResume, onRestart, onToMenu, onViewToggle;
-
-  function init(callbacks) {
-    Object.assign({ onModeSelect, onPause, onResume, onRestart, onToMenu, onViewToggle }, callbacks);
-    onModeSelect = callbacks.onModeSelect;
-    onPause = callbacks.onPause;
-    onResume = callbacks.onResume;
-    onRestart = callbacks.onRestart;
-    onToMenu = callbacks.onToMenu;
-    onViewToggle = callbacks.onViewToggle;
-
+  function init(cb) {
+    callbacks = cb;
     menuOverlay = document.getElementById('menu-overlay');
     pauseOverlay = document.getElementById('pause-overlay');
     notifications = document.getElementById('notifications');
@@ -830,22 +735,19 @@ const UI = (() => {
     wheelMarker = steeringWheelEl ? steeringWheelEl.querySelector('.wheel-marker') : null;
     musicBtn = document.getElementById('btn-music');
 
-    // Меню
     menuOverlay.querySelectorAll('.mode-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         menuOverlay.classList.add('hidden');
-        if (onModeSelect) onModeSelect(btn.dataset.mode);
+        if (callbacks.onModeSelect) callbacks.onModeSelect(btn.dataset.mode);
       });
     });
 
-    // Пауза
-    document.getElementById('btn-pause').addEventListener('click', () => onPause && onPause());
-    document.getElementById('btn-resume').addEventListener('click', () => onResume && onResume());
-    document.getElementById('btn-restart').addEventListener('click', () => onRestart && onRestart());
-    document.getElementById('btn-tomenu').addEventListener('click', () => onToMenu && onToMenu());
-    document.getElementById('btn-view').addEventListener('click', () => onViewToggle && onViewToggle());
+    document.getElementById('btn-pause').addEventListener('click', () => callbacks.onPause && callbacks.onPause());
+    document.getElementById('btn-resume').addEventListener('click', () => callbacks.onResume && callbacks.onResume());
+    document.getElementById('btn-restart').addEventListener('click', () => callbacks.onRestart && callbacks.onRestart());
+    document.getElementById('btn-tomenu').addEventListener('click', () => callbacks.onToMenu && callbacks.onToMenu());
+    document.getElementById('btn-view').addEventListener('click', () => callbacks.onViewToggle && callbacks.onViewToggle());
 
-    // Музыка
     const audio = document.getElementById('bg-music');
     const musicFileInput = document.getElementById('music-file');
     const btnLoadMusic = document.getElementById('btn-load-music');
@@ -867,7 +769,6 @@ const UI = (() => {
       }
     });
 
-    // Клавиатура
     window.addEventListener('keydown', e => {
       const k = e.key.toLowerCase();
       if (['w','arrowup'].includes(k)) { keys.w = true; e.preventDefault(); }
@@ -875,8 +776,8 @@ const UI = (() => {
       if (['a','arrowleft'].includes(k)) { keys.a = true; e.preventDefault(); }
       if (['d','arrowright'].includes(k)) { keys.d = true; e.preventDefault(); }
       if (k === ' ') { keys.space = true; e.preventDefault(); }
-      if (k === 'r' && onRestart) onRestart();
-      if (k === 'escape' && onPause) onPause();
+      if (k === 'r' && callbacks.onRestart) callbacks.onRestart();
+      if (k === 'escape' && callbacks.onPause) callbacks.onPause();
     });
     window.addEventListener('keyup', e => {
       const k = e.key.toLowerCase();
@@ -887,11 +788,9 @@ const UI = (() => {
       if (k === ' ') keys.space = false;
     });
 
-    // Тач-педали
     setupTouchPedal(pedalGasEl, (a) => touch.throttle = a ? 1 : 0);
     setupTouchPedal(pedalBrakeEl, (a) => touch.brake = a ? 1 : 0);
 
-    // Тач-руль (улучшенный)
     if (steeringWheelEl) {
       let activeId = null, startX = 0;
       steeringWheelEl.addEventListener('touchstart', (e) => {
@@ -977,15 +876,16 @@ const UI = (() => {
     setTimeout(() => el.remove(), 2800);
   }
 
-  function showMenu() { menuOverlay.classList.remove('hidden'); pauseOverlay.classList.remove('show'); }
-  function hideMenu() { menuOverlay.classList.add('hidden'); }
-  function showPause() { pauseOverlay.classList.add('show'); }
-  function hidePause() { pauseOverlay.classList.remove('show'); }
-
-  return { init, getInput, updateHUD, notify, showMenu, hideMenu, showPause, hidePause };
+  return {
+    init, getInput, updateHUD, notify,
+    showMenu: () => menuOverlay.classList.remove('hidden'),
+    hideMenu: () => menuOverlay.classList.add('hidden'),
+    showPause: () => pauseOverlay.classList.add('show'),
+    hidePause: () => pauseOverlay.classList.remove('show')
+  };
 })();
 
-/* ===================== MODES (Режимы) ===================== */
+/* ===================== MODES ===================== */
 const Modes = (() => {
   let currentMode = 'sandbox';
   let gameState = { targetDistance: 0, timeLimit: 0, elapsed: 0, fines: 0, finished: false, lastFine: 0 };
@@ -1021,15 +921,15 @@ const Modes = (() => {
   return { setMode, update, reset, get gameState() { return gameState; } };
 })();
 
-/* ===================== GAME (Цикл) ===================== */
+/* ===================== GAME ===================== */
 const Game = (() => {
-  let renderer, scene, camera, composer, clock;
+  let renderer, scene, camera, clock;
   let paused = false, mode = 'sandbox', viewMode = 'first';
 
   function init() {
     const canvas = document.getElementById('game-canvas');
     const engine = Engine.init(canvas);
-    renderer = engine.renderer; scene = engine.scene; camera = engine.camera; clock = engine.clock; composer = engine.composer;
+    renderer = engine.renderer; scene = engine.scene; camera = engine.camera; clock = engine.clock;
 
     World.init(scene);
     Truck.init(scene, camera);
@@ -1065,14 +965,12 @@ const Game = (() => {
         camera.lookAt(p.x, 2, p.z);
       }
 
-      // Обновляем солнце за игроком
       const sun = Engine.sunLight;
       sun.position.set(Truck.physics.position.x + 80, 150, Truck.physics.position.z - 50);
       sun.target.position.copy(Truck.physics.position);
     }
 
-    // Рендер через composer (с Bloom-эффектом)
-    composer.render();
+    renderer.render(scene, camera);
   }
 
   return { init };
@@ -1080,11 +978,11 @@ const Game = (() => {
 
 window.addEventListener('load', () => {
   if (typeof THREE === 'undefined') {
-    alert('Ошибка загрузки Three.js. Проверьте интернет или обновите страницу.');
+    alert('Не удалось загрузить Three.js. Проверьте интернет и обновите страницу.');
     return;
   }
   Game.init();
 });
 </script>
 </body>
- </html>
+</html>
